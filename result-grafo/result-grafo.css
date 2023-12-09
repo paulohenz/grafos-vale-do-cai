@@ -1,0 +1,48 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.grafo {
+  position: relative;
+}
+
+.vertice {
+  width: 40px;
+  height: 40px;
+  background-color: #3498db;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  position: relative;
+  z-index: 1;
+}
+
+.vertice::before {
+  content: '';
+  position: absolute;
+  width: 2px;
+  height: 20px;
+  background-color: #3498db;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-1px);
+}
+
+#feliz::before { left: calc(100% + 10px); }
+#bomprincipio::before { left: calc(100% + 10px); }
+#sscai::before { left: calc(100% + 10px); }
+#tupandi::before { left: calc(100% + 10px); }
+#saovendelino::before { left: calc(100% + 10px); }
+#valereal::before { left: calc(100% + 10px); }
+#altofeliz::before { left: calc(100% + 10px); }
+
+  

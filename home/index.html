@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dijkstra's Algorithm</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        select {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+
+        button {
+            font-size: 16px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Menor Caminho usando Dijkstra's Algorithm</h2>
+
+<label for="origem">Origem:</label>
+<select id="origem">
+    <option value="Feliz">Feliz</option>
+    <option value="Vale Real">Vale Real</option>
+    <option value="Alto Feliz">Alto Feliz</option>
+    <option value="Bom Princípio">Bom Princípio</option>
+    <option value="Tupandi">Tupandi</option>
+    <option value="São Vendelino">São Vendelino</option>
+    <option value="S.S. do Caí">S.S. do Caí</option>
+</select>
+
+<label for="destino">Destino:</label>
+<select id="destino">
+    <option value="Feliz">Feliz</option>
+    <option value="Vale Real">Vale Real</option>
+    <option value="Alto Feliz">Alto Feliz</option>
+    <option value="Bom Princípio">Bom Princípio</option>
+    <option value="Tupandi">Tupandi</option>
+    <option value="São Vendelino">São Vendelino</option>
+    <option value="S.S. do Caí">S.S. do Caí</option>
+</select>
+
+<button onclick="encontrarMenorCaminho()">Encontrar Menor Caminho</button>
+
+<p id="resultado"></p>
+
+<script>
+    class Grafo {
+        constructor() {
+            this.vertices = new Set();
+            this.arestas = {};
+        }
+
+        adicionarVertice(vertice) {
+            this.vertices.add(vertice);
+            this.arestas[vertice] = [];
+        }
+
+        adicionarAresta(origem, destino, peso) {
+            this.arestas[origem].push({ destino, peso });
+            this.arestas[destino].push({ origem, peso });
+        }
+
+        dijkstra(origem, destino) {
+            const distancias = {};
+            const visitados = new Set();
+
+            for (const vertice of this.vertices) {
+                distancias[vertice] = Infinity;
+            }
+
+            distancias[origem] = 0;
+
+            while (visitados.size !== this.vertices.size) {
+                const atual = Array.from(this.vertices).filter(vertice => !visitados.has(vertice)).reduce((min, vertice) => distancias[vertice] < distancias[min] ? vertice : min, origem);
+
+                visitados.add(atual);
+
+                for (const { destino, peso } of this.arestas[atual]) {
+                    const novaDistancia = distancias[atual] + peso;
+
+                    if (novaDistancia < distancias[destino]) {
+                        distancias[destino] = novaDistancia;
+                    }
+                }
+            }
+
+            const caminho = [];
+            let atual = destino;
+
+            while (atual !== origem) {
+                caminho.unshift(atual);
+                atual = Array.from(this.vertices).filter(vertice => this.arestas[atual].some(v => v.destino === vertice)).reduce((min, vertice) => distancias[vertice] < distancias[min] ? vertice : min, origem);
+            }
+
+            caminho.unshift(origem);
+
+            return { caminho, distancia: distancias[destino] };
+        }
+    }
+
+    const grafo = new Grafo();
+
+    grafo.adicionarVertice("Feliz");
+    grafo.adicionarVertice("Vale Real");
+    grafo.adicionarVertice("Alto Feliz");
+    grafo.adicionarVertice("Bom Princípio");
+    grafo.adicionarVertice("Tupandi");
+    grafo.adicionarVertice("São Vendelino");
+    grafo.adicionarVertice("S.S. do Caí");
+
+    grafo.adicionarAresta("Feliz", "Vale Real", 10.2);
+    grafo.adicionarAresta("Feliz", "Bom Princípio", 8.0);
+    grafo.adicionarAresta("Feliz", "Alto Feliz", 11.3);
+    grafo.adicionarAresta("Feliz", "S.S. do Caí", 22.5);
+    grafo.adicionarAresta("Bom Princípio", "São Vendelino", 17.9);
+    grafo.adicionarAresta("Bom Princípio", "S.S. do Caí", 12.6);
+    grafo.adicionarAresta("Bom Princípio", "Tupandi", 10.8);
+    grafo.adicionarAresta("S.S. do Caí", "Tupandi", 18.0);
+    grafo.adicionarAresta("São Vendelino", "Alto Feliz", 11.1);
+
+    function encontrarMenorCaminho() {
+        var origem = document.getElementById("origem").value;
+        var destino = document.getElementById("destino").value;
+
+        const { caminho, distancia } = grafo.dijkstra(origem, destino);
+
+        var resultadoElement = document.getElementById("resultado");
+        resultadoElement.innerHTML = `Menor caminho: ${caminho.join(" -> ")} <br> Distância: ${distancia}`;
+    }
+</script>
+
+</body>
+</html>
