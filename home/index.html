@@ -3,28 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dijkstra's Algorithm</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-
-        select {
-            font-size: 16px;
-            margin-bottom: 10px;
-        }
-
-        button {
-            font-size: 16px;
-            padding: 5px 10px;
-            cursor: pointer;
-        }
-    </style>
+    <link rel="stylesheet" href="index.css">
+    <title>Caminho mais curto</title>
 </head>
 <body>
 
-<h2>Menor Caminho usando Dijkstra's Algorithm</h2>
+<h2>Menor Caminho entre cidades do Vale do Caí</h2>
 
 <label for="origem">Origem:</label>
 <select id="origem">
@@ -80,7 +64,19 @@
             distancias[origem] = 0;
 
             while (visitados.size !== this.vertices.size) {
-                const atual = Array.from(this.vertices).filter(vertice => !visitados.has(vertice)).reduce((min, vertice) => distancias[vertice] < distancias[min] ? vertice : min, origem);
+                let atual = null;
+                let menorDistancia = Infinity;
+
+                for (const vertice of this.vertices) {
+                    if (!visitados.has(vertice) && distancias[vertice] < menorDistancia) {
+                        atual = vertice;
+                        menorDistancia = distancias[vertice];
+                    }
+                }
+
+                if (atual === null) {
+                    break;
+                }
 
                 visitados.add(atual);
 
@@ -93,12 +89,21 @@
                 }
             }
 
+
             const caminho = [];
             let atual = destino;
 
             while (atual !== origem) {
                 caminho.unshift(atual);
-                atual = Array.from(this.vertices).filter(vertice => this.arestas[atual].some(v => v.destino === vertice)).reduce((min, vertice) => distancias[vertice] < distancias[min] ? vertice : min, origem);
+
+                const arestasDoAtual = this.arestas[atual];
+    
+                const proximaCidade = arestasDoAtual.reduce((min, { origem, destino }) => {
+                    const vizinho = origem === atual ? destino : origem;
+                    return distancias[vizinho] < distancias[min] ? vizinho : min;
+                }, origem);
+
+                atual = proximaCidade;
             }
 
             caminho.unshift(origem);
